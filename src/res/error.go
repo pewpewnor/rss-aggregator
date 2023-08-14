@@ -37,10 +37,11 @@ func SimpleErrorResponse(message string, details string) ErrorResponseData {
 	}
 }
 
-func SimpleErrorResponseFromError(err error) ErrorResponseData {
+func SimpleErrorResponseFromError(message string, err error) ErrorResponseData {
 	return ErrorResponseData{
 		ErrorData: errorResponseContent{
-			Message: err.Error(),
+			Message: message,
+			Details: err.Error(),
 		},
 	}
 }
