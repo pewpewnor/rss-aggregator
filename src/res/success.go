@@ -1,4 +1,4 @@
-package response
+package res
 
 type successResponse struct {
 	Status  string                 `json:"status"`
