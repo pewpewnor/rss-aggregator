@@ -5,7 +5,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/pewpewnor/rss-aggregator/internal/auth"
 	"github.com/pewpewnor/rss-aggregator/internal/database"
 	"github.com/pewpewnor/rss-aggregator/src/res"
 )
@@ -16,7 +15,7 @@ func (hc *HandlerContext) handleCreateUser(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&params); err != nil {
-		c.JSON(400, res.SimpleErrorResponseFromError(err))
+		c.JSON(400, res.SimpleErrorResponseFromError("Request body is invalid", err))
 		return
 	}
 
@@ -27,31 +26,15 @@ func (hc *HandlerContext) handleCreateUser(c *gin.Context) {
 		Name:      params.Name,
 	})
 	if err != nil {
-		c.JSON(500, res.SimpleErrorResponseFromError(err))
+		c.JSON(500, res.SimpleErrorResponseFromError("Cannot create user in database", err))
 		return
 	}
 
-	c.JSON(201, res.SuccessResponse(gin.H{"user": dbUserToUser(user)}, "User successfully created"))
+	c.JSON(201, res.SuccessResponse(gin.H{"user": dbUserToModelUser(user)}, "User successfully created"))
 }
 
 func (hc *HandlerContext) handleGetUser(c *gin.Context) {
-	apiKey, err := auth.GetAPIKey(c)
-	if err != nil {
-		errorResponse, ok := err.(res.ErrorResponseData)
-		if !ok {
-			c.JSON(401, err.Error())
-			return
-		}
+	user, _ := c.MustGet("user").(User)
 
-		c.JSON(401, errorResponse)
-		return
-	}
-
-	user, err := hc.DB.GetUserByAPIKey(c, apiKey)
-	if err != nil {
-		c.JSON(401, res.SimpleErrorResponse("Authentication error", "User with API key not found"))
-		return
-	}
-
-	c.JSON(200, res.SuccessResponse(gin.H{"user": dbUserToUser(user)}, "User successfully found"))
+	c.JSON(200, res.SuccessResponse(gin.H{"user": user}, "User successfully found"))
 }
