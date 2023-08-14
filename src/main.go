@@ -51,6 +51,7 @@ func main() {
 	v1 := router.Group("/v1")
 	{
 		v1.GET("/healthz", handleReady)
+		v1.GET("/users", hc1.handleGetUser)
 		v1.POST("/users", hc1.handleCreateUser)
 	}
 

@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/pewpewnor/rss-aggregator/internal/auth"
 	"github.com/pewpewnor/rss-aggregator/internal/database"
 	"github.com/pewpewnor/rss-aggregator/src/res"
 )
@@ -30,9 +31,27 @@ func (hc *HandlerContext) handleCreateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, res.SuccessResponse(gin.H{"user": dbUserToUser(user)}, "User successfully created"))
+	c.JSON(201, res.SuccessResponse(gin.H{"user": dbUserToUser(user)}, "User successfully created"))
 }
 
 func (hc *HandlerContext) handleGetUser(c *gin.Context) {
+	apiKey, err := auth.GetAPIKey(c)
+	if err != nil {
+		errorResponse, ok := err.(res.ErrorResponseData)
+		if !ok {
+			c.JSON(401, err.Error())
+			return
+		}
 
+		c.JSON(401, errorResponse)
+		return
+	}
+
+	user, err := hc.DB.GetUserByAPIKey(c, apiKey)
+	if err != nil {
+		c.JSON(401, res.SimpleErrorResponse("Authentication error", "User with API key not found"))
+		return
+	}
+
+	c.JSON(200, res.SuccessResponse(gin.H{"user": dbUserToUser(user)}, "User successfully found"))
 }
