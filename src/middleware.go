@@ -43,5 +43,6 @@ func (hc *HandlerContext) authMiddleware() gin.HandlerFunc {
 		}
 
 		c.Set("user", dbUserToModelUser(user))
+		c.Next()
 	}
 }
