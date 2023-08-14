@@ -6,5 +6,5 @@ import (
 )
 
 func handleReady(c *gin.Context) {
-	c.JSON(200, response.GenerateSimpleSuccessResponse("Server is ready"))
+	c.JSON(200, response.SimpleSuccessResponse("Server is ready"))
 }

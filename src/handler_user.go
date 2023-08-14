@@ -15,7 +15,7 @@ func (hc *HandlerContext) handleCreateUser(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&params); err != nil {
-		c.JSON(400, response.GenerateSimpleErrorResponse(err))
+		c.JSON(400, response.SimpleErrorResponseFromError(err))
 		return
 	}
 
@@ -26,9 +26,13 @@ func (hc *HandlerContext) handleCreateUser(c *gin.Context) {
 		Name:      params.Name,
 	})
 	if err != nil {
-		c.JSON(500, response.GenerateSimpleErrorResponse(err))
+		c.JSON(500, response.SimpleErrorResponseFromError(err))
 		return
 	}
 
-	c.JSON(200, response.GenerateSuccessResponse(gin.H{"user": dbUserToUser(user)}, "User successfully created"))
+	c.JSON(200, response.SuccessResponse(gin.H{"user": dbUserToUser(user)}, "User successfully created"))
+}
+
+func (hc *HandlerContext) handleGetUser(c *gin.Context) {
+
 }
