@@ -1,7 +1,6 @@
 package res
 
 import (
-	"fmt"
 	"strconv"
 )
 
@@ -14,7 +13,7 @@ func (e *errorResponse) AddValidation(validation ErrorResponseValidation) {
 }
 
 func (e errorResponse) Error() string {
-	return fmt.Sprintf("%v", e.ErrorData.Message)
+	return e.ErrorData.Message
 }
 
 type errorResponseContent struct {
