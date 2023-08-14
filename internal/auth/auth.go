@@ -13,13 +13,13 @@ import (
 func GetAPIKey(c *gin.Context) (string, error) {
 	value := c.Request.Header["Authorization"][0]
 	if value == "" {
-		err := res.SimpleErrorResponse("Authentication error", "No authorization header or its value is not given")
+		err := res.SimpleErrorResponse("Authentication error", "no authorization header or its value is not given")
 		return "", err
 	}
 
 	values := strings.Split(value, " ")
 	if len(values) != 2 {
-		err := res.SimpleErrorResponse("Authentication error", "Malformed authorization header value")
+		err := res.SimpleErrorResponse("Authentication error", "malformed authorization header value")
 		err.AddValidation(res.ErrorResponseValidation{
 			Field:   "Authorization header",
 			Message: "Expected exactly 2 values",
@@ -28,7 +28,7 @@ func GetAPIKey(c *gin.Context) (string, error) {
 		return "", err
 	}
 	if values[0] != "Apikey" {
-		err := res.SimpleErrorResponse("Authentication error", "Malformed authorization header value")
+		err := res.SimpleErrorResponse("Authentication error", "malformed authorization header value")
 		err.AddValidation(res.ErrorResponseValidation{
 			Field:   "Authorization header",
 			Message: "First value must be 'Apikey'",
