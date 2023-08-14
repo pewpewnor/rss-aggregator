@@ -4,15 +4,15 @@ import (
 	"strconv"
 )
 
-type errorResponse struct {
+type ErrorResponseData struct {
 	ErrorData errorResponseContent `json:"error"`
 }
 
-func (e *errorResponse) AddValidation(validation ErrorResponseValidation) {
+func (e *ErrorResponseData) AddValidation(validation ErrorResponseValidation) {
 	e.ErrorData.ValidationErrors = append(e.ErrorData.ValidationErrors, validation)
 }
 
-func (e errorResponse) Error() string {
+func (e ErrorResponseData) Error() string {
 	return e.ErrorData.Message
 }
 
@@ -28,24 +28,24 @@ type ErrorResponseValidation struct {
 	Message string `json:"message"`
 }
 
-func SimpleErrorResponse(message string) errorResponse {
-	return errorResponse{
+func SimpleErrorResponse(message string) ErrorResponseData {
+	return ErrorResponseData{
 		ErrorData: errorResponseContent{
 			Message: message,
 		},
 	}
 }
 
-func SimpleErrorResponseFromError(err error) errorResponse {
-	return errorResponse{
+func SimpleErrorResponseFromError(err error) ErrorResponseData {
+	return ErrorResponseData{
 		ErrorData: errorResponseContent{
 			Message: err.Error(),
 		},
 	}
 }
 
-func ErrorResponse(code int, message string, details string, validationErrors []ErrorResponseValidation) errorResponse {
-	return errorResponse{
+func ErrorResponse(code int, message string, details string, validationErrors []ErrorResponseValidation) ErrorResponseData {
+	return ErrorResponseData{
 		ErrorData: errorResponseContent{
 			strconv.Itoa(code),
 			message,
