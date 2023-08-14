@@ -28,10 +28,11 @@ type ErrorResponseValidation struct {
 	Message string `json:"message"`
 }
 
-func SimpleErrorResponse(message string) ErrorResponseData {
+func SimpleErrorResponse(message string, details string) ErrorResponseData {
 	return ErrorResponseData{
 		ErrorData: errorResponseContent{
 			Message: message,
+			Details: details,
 		},
 	}
 }
