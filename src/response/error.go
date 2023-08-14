@@ -1,9 +1,20 @@
 package response
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 type errorResponse struct {
-	Error errorResponseContent `json:"error"`
+	ErrorData errorResponseContent `json:"error"`
+}
+
+func (e *errorResponse) AddValidation(validation ErrorResponseValidation) {
+	e.ErrorData.ValidationErrors = append(e.ErrorData.ValidationErrors, validation)
+}
+
+func (e errorResponse) Error() string {
+	return fmt.Sprintf("%v", e.ErrorData.Message)
 }
 
 type errorResponseContent struct {
@@ -18,9 +29,17 @@ type ErrorResponseValidation struct {
 	Message string `json:"message"`
 }
 
+func SimpleErrorResponse(message string) errorResponse {
+	return errorResponse{
+		ErrorData: errorResponseContent{
+			Message: message,
+		},
+	}
+}
+
 func SimpleErrorResponseFromError(err error) errorResponse {
 	return errorResponse{
-		Error: errorResponseContent{
+		ErrorData: errorResponseContent{
 			Message: err.Error(),
 		},
 	}
@@ -28,7 +47,7 @@ func SimpleErrorResponseFromError(err error) errorResponse {
 
 func ErrorResponse(code int, message string, details string, validationErrors []ErrorResponseValidation) errorResponse {
 	return errorResponse{
-		Error: errorResponseContent{
+		ErrorData: errorResponseContent{
 			strconv.Itoa(code),
 			message,
 			details,
