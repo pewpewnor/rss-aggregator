@@ -29,7 +29,7 @@ type ErrorResponseValidation struct {
 	Message string `json:"message"`
 }
 
-func SimpleErrorResponse(message string) errorResponse {
+func SimpleError(message string) errorResponse {
 	return errorResponse{
 		ErrorData: errorResponseContent{
 			Message: message,
@@ -37,7 +37,7 @@ func SimpleErrorResponse(message string) errorResponse {
 	}
 }
 
-func SimpleErrorResponseFromError(err error) errorResponse {
+func SimpleErrorFromError(err error) errorResponse {
 	return errorResponse{
 		ErrorData: errorResponseContent{
 			Message: err.Error(),
@@ -45,7 +45,7 @@ func SimpleErrorResponseFromError(err error) errorResponse {
 	}
 }
 
-func ErrorResponse(code int, message string, details string, validationErrors []ErrorResponseValidation) errorResponse {
+func Error(code int, message string, details string, validationErrors []ErrorResponseValidation) errorResponse {
 	return errorResponse{
 		ErrorData: errorResponseContent{
 			strconv.Itoa(code),
