@@ -1,0 +1,12 @@
+# build
+bin/
+rssaggregator
+
+# secret
+.env
+*.crt
+*.csr
+*.key
+
+# dependencies
+vendor/
