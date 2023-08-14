@@ -15,7 +15,7 @@ type User struct {
 	APIKey    string    `json:"api_key"`
 }
 
-func dbUserToUser(dbUser database.User) User {
+func dbUserToModelUser(dbUser database.User) User {
 	return User{
 		ID:        dbUser.ID,
 		CreatedAt: dbUser.CreatedAt,
