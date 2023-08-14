@@ -9,4 +9,3 @@ rssaggregator
 *.key
 
 # dependencies
-vendor/
