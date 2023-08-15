@@ -14,12 +14,13 @@ func (hc *HandlerContext) HandleCreateFeed(c *gin.Context) {
 	user := utils.GetUserFromAuthMiddleware(c)
 
 	var params struct {
-		Name string `json:"name"`
-		Url  string `json:"url"`
+		Name string `json:"name" binding:"required"`
+		Url  string `json:"url" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(400, res.SimpleErrorResponseFromError(
 			"Invalid request body", err))
+		return
 	}
 
 	feed, err := hc.DB.CreateFeed(c, database.CreateFeedParams{
@@ -31,7 +32,7 @@ func (hc *HandlerContext) HandleCreateFeed(c *gin.Context) {
 		UserID:    user.ID,
 	})
 	if err != nil {
-		c.JSON(500, res.SimpleErrorResponseFromError(
+		c.JSON(400, res.SimpleErrorResponseFromError(
 			"Cannot create feed in database", err))
 		return
 	}

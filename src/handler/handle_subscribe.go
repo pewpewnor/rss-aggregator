@@ -14,11 +14,12 @@ func (hc *HandlerContext) HandleSubscribe(c *gin.Context) {
 	user := utils.GetUserFromAuthMiddleware(c)
 
 	var params struct {
-		FeedID uuid.UUID `json:"feed_id"`
+		FeedID uuid.UUID `json:"feed_id" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&params); err != nil {
 		c.JSON(400, res.SimpleErrorResponseFromError(
 			"Invalid request body", err))
+		return
 	}
 
 	subscribe, err := hc.DB.CreateSubscribe(
@@ -30,12 +31,12 @@ func (hc *HandlerContext) HandleSubscribe(c *gin.Context) {
 			FeedID:    params.FeedID,
 		})
 	if err != nil {
-		c.JSON(500, res.SimpleErrorResponseFromError(
+		c.JSON(400, res.SimpleErrorResponseFromError(
 			"Cannot create subscribe in database", err))
 		return
 	}
 
 	c.JSON(201, res.SuccessResponse(
-		gin.H{"userFeed": utils.DBSubscribeToModelSubscribe(subscribe)},
+		gin.H{"subscribe": utils.DBSubscribeToModelSubscribe(subscribe)},
 		"Subscribe successfully created"))
 }
