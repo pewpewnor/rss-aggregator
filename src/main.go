@@ -41,6 +41,7 @@ func main() {
 
 	router := gin.Default()
 	router.Use(handler.CORSMiddleware())
+	router.Use(hc1.AliveMiddleware())
 	router.Use(hc1.AuthMiddleware())
 
 	v1 := router.Group("/v1")
