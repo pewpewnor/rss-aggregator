@@ -45,8 +45,9 @@ func (q *Queries) CreateSubscribe(ctx context.Context, arg CreateSubscribeParams
 	return i, err
 }
 
-const deleteSubscribe = `-- name: DeleteSubscribe :exec
+const deleteSubscribe = `-- name: DeleteSubscribe :one
 DELETE FROM subscribes WHERE id = $1 AND user_id = $2
+RETURNING id, created_at, updated_at, user_id, feed_id
 `
 
 type DeleteSubscribeParams struct {
@@ -54,17 +55,25 @@ type DeleteSubscribeParams struct {
 	UserID uuid.UUID
 }
 
-func (q *Queries) DeleteSubscribe(ctx context.Context, arg DeleteSubscribeParams) error {
-	_, err := q.db.ExecContext(ctx, deleteSubscribe, arg.ID, arg.UserID)
-	return err
+func (q *Queries) DeleteSubscribe(ctx context.Context, arg DeleteSubscribeParams) (Subscribe, error) {
+	row := q.db.QueryRowContext(ctx, deleteSubscribe, arg.ID, arg.UserID)
+	var i Subscribe
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.UserID,
+		&i.FeedID,
+	)
+	return i, err
 }
 
-const getSubscribe = `-- name: GetSubscribe :many
+const getSubscribeByUserID = `-- name: GetSubscribeByUserID :many
 SELECT id, created_at, updated_at, user_id, feed_id FROM subscribes WHERE user_id = $1
 `
 
-func (q *Queries) GetSubscribe(ctx context.Context, userID uuid.UUID) ([]Subscribe, error) {
-	rows, err := q.db.QueryContext(ctx, getSubscribe, userID)
+func (q *Queries) GetSubscribeByUserID(ctx context.Context, userID uuid.UUID) ([]Subscribe, error) {
+	rows, err := q.db.QueryContext(ctx, getSubscribeByUserID, userID)
 	if err != nil {
 		return nil, err
 	}

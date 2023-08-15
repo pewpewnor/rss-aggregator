@@ -14,7 +14,7 @@ import (
 func (hc *HandlerContext) HandleGetSubscribe(c *gin.Context) {
 	user := utils.GetUserFromAuthMiddleware(c)
 
-	subscribe, err := hc.DB.GetSubscribe(c, user.ID)
+	subscribe, err := hc.DB.GetSubscribeByUserID(c, user.ID)
 	if err != nil {
 		c.JSON(400, res.SimpleErrorResponseFromError(
 			"Cannot get subscribe from database", err))
@@ -67,7 +67,7 @@ func (hc *HandlerContext) HandleDeleteSubscribe(c *gin.Context) {
 		return
 	}
 
-	err = hc.DB.DeleteSubscribe(c, database.DeleteSubscribeParams{
+	_, err = hc.DB.DeleteSubscribe(c, database.DeleteSubscribeParams{
 		ID:     subscribeID,
 		UserID: user.ID,
 	})
@@ -77,5 +77,5 @@ func (hc *HandlerContext) HandleDeleteSubscribe(c *gin.Context) {
 		return
 	}
 
-	c.JSON(201, res.SimpleSuccessResponse("Subscribe successfully found"))
+	c.JSON(200, res.SimpleSuccessResponse("Subscribe successfully deleted"))
 }
