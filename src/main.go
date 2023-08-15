@@ -42,15 +42,19 @@ func main() {
 	router := gin.Default()
 	router.Use(handler.CORSMiddleware())
 	router.Use(hc1.AliveMiddleware())
-	router.Use(hc1.AuthMiddleware())
 
-	v1 := router.Group("/v1")
+	v1NoAuth := router.Group("/v1")
 	{
-		v1.GET("/healthz", handler.HandleReady)
-		v1.GET("/users", hc1.HandleGetUser)
-		v1.POST("/users", hc1.HandleCreateUser)
-		v1.POST("/feeds", hc1.HandleCreateFeed)
-		v1.POST("/subscribe", hc1.HandleCreateFeed)
+		v1NoAuth.GET("/healthz", handler.HandleReady)
+		v1NoAuth.POST("/users", hc1.HandleCreateUser)
+	}
+
+	v1WithAuth := router.Group("/v1")
+	v1WithAuth.Use(hc1.AuthMiddleware())
+	{
+		v1WithAuth.GET("/users", hc1.HandleGetUser)
+		v1WithAuth.POST("/feeds", hc1.HandleCreateFeed)
+		v1WithAuth.POST("/subscribes", hc1.HandleSubscribe)
 	}
 
 	if os.Getenv("HTTP_ONLY") == "true" {
