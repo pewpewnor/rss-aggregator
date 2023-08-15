@@ -46,6 +46,7 @@ func main() {
 	v1NoAuth := router.Group("/v1")
 	{
 		v1NoAuth.GET("/healthz", handler.HandleReady)
+
 		v1NoAuth.POST("/users", hc1.HandleCreateUser)
 	}
 
@@ -53,8 +54,11 @@ func main() {
 	v1WithAuth.Use(hc1.AuthMiddleware())
 	{
 		v1WithAuth.GET("/users", hc1.HandleGetUser)
+
 		v1WithAuth.POST("/feeds", hc1.HandleCreateFeed)
-		v1WithAuth.POST("/subscribes", hc1.HandleSubscribe)
+
+		v1WithAuth.GET("/subscribes", hc1.HandleGetSubscribe)
+		v1WithAuth.POST("/subscribes", hc1.HandleCreateSubscribe)
 	}
 
 	if os.Getenv("HTTP_ONLY") == "true" {
