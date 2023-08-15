@@ -7,8 +7,8 @@ import (
 
 func (hc *HandlerContext) AliveMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		v, err := hc.DB.Alive(c)
-		if v == 0 || err == nil {
+		_, err := hc.DB.Alive(c)
+		if err != nil {
 			c.AbortWithStatusJSON(500, res.SimpleErrorResponseFromError(
 				"Server inactive (dead)", err))
 			return
