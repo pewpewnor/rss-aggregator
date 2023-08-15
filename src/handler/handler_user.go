@@ -33,7 +33,8 @@ func (hc *HandlerContext) HandleCreateUser(c *gin.Context) {
 	}
 
 	c.JSON(201, res.SuccessResponse(
-		gin.H{"user": utils.DBUserToModelUser(user)}, "User successfully created"))
+		gin.H{"user": utils.DBUserToModelUser(user)},
+		"User successfully created"))
 }
 
 func (hc *HandlerContext) HandleGetUser(c *gin.Context) {

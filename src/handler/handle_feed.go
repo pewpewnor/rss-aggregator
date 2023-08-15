@@ -38,5 +38,6 @@ func (hc *HandlerContext) HandleCreateFeed(c *gin.Context) {
 	}
 
 	c.JSON(201, res.SuccessResponse(
-		gin.H{"feed": utils.DBFeedToModelFeed(feed)}, "Feed successfully created"))
+		gin.H{"feed": utils.DBFeedToModelFeed(feed)},
+		"Feed successfully created"))
 }
