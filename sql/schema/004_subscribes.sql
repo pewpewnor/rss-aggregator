@@ -1,6 +1,6 @@
 -- +goose Up
 
-CREATE TABLE users_feeds (
+CREATE TABLE subscribes (
     id UUID PRIMARY KEY,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
@@ -11,4 +11,4 @@ CREATE TABLE users_feeds (
 
 -- +goose Down
 
-DROP TABLE users_feeds;
+DROP TABLE subscribes;

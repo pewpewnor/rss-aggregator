@@ -25,3 +25,13 @@ func DBFeedToModelFeed(dbFeed database.Feed) model.Feed {
 		UserID:    dbFeed.UserID,
 	}
 }
+
+func DBSubscribeToModelSubscribe(dbFeed database.Subscribe) model.Subscribe {
+	return model.Subscribe{
+		ID:        dbFeed.ID,
+		CreatedAt: dbFeed.CreatedAt,
+		UpdatedAt: dbFeed.UpdatedAt,
+		UserID:    dbFeed.UserID,
+		FeedID:    dbFeed.FeedID,
+	}
+}
