@@ -14,3 +14,14 @@ func DBUserToModelUser(dbUser database.User) model.User {
 		APIKey:    dbUser.ApiKey,
 	}
 }
+
+func DBFeedToModelFeed(dbFeed database.Feed) model.Feed {
+	return model.Feed{
+		ID:        dbFeed.ID,
+		CreatedAt: dbFeed.CreatedAt,
+		UpdatedAt: dbFeed.UpdatedAt,
+		Name:      dbFeed.Name,
+		URL:       dbFeed.Url,
+		UserID:    dbFeed.UserID,
+	}
+}
