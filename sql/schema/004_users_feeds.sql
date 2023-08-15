@@ -1,6 +1,6 @@
 -- +goose Up
 
-CREATE TABLE feeds_follows (
+CREATE TABLE users_feeds (
     id UUID PRIMARY KEY,
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
@@ -11,4 +11,4 @@ CREATE TABLE feeds_follows (
 
 -- +goose Down
 
-DROP TABLE feeds_follows;
+DROP TABLE users_feeds;
