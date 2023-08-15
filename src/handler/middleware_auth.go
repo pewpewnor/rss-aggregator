@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/pewpewnor/rss-aggregator/src/model"
 	"github.com/pewpewnor/rss-aggregator/src/res"
 	"github.com/pewpewnor/rss-aggregator/src/utils"
 )
@@ -27,7 +28,7 @@ func (hc *HandlerContext) AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("user", utils.DBUserToModelUser(user))
+		c.Set("user", model.User(user))
 		c.Next()
 	}
 }

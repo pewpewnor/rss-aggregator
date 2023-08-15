@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/pewpewnor/rss-aggregator/internal/database"
+	"github.com/pewpewnor/rss-aggregator/src/model"
 	"github.com/pewpewnor/rss-aggregator/src/res"
 	"github.com/pewpewnor/rss-aggregator/src/utils"
 )
@@ -33,7 +34,7 @@ func (hc *HandlerContext) HandleCreateUser(c *gin.Context) {
 	}
 
 	c.JSON(201, res.SuccessResponse(
-		gin.H{"user": utils.DBUserToModelUser(user)},
+		gin.H{"user": model.User(user)},
 		"User successfully created"))
 }
 

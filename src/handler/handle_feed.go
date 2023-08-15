@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/pewpewnor/rss-aggregator/internal/database"
+	"github.com/pewpewnor/rss-aggregator/src/model"
 	"github.com/pewpewnor/rss-aggregator/src/res"
 	"github.com/pewpewnor/rss-aggregator/src/utils"
 )
@@ -38,6 +39,6 @@ func (hc *HandlerContext) HandleCreateFeed(c *gin.Context) {
 	}
 
 	c.JSON(201, res.SuccessResponse(
-		gin.H{"feed": utils.DBFeedToModelFeed(feed)},
+		gin.H{"feed": model.Feed(feed)},
 		"Feed successfully created"))
 }

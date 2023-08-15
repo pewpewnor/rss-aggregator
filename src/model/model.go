@@ -11,7 +11,7 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Name      string    `json:"name"`
-	APIKey    string    `json:"api_key"`
+	ApiKey    string    `json:"api_key"`
 }
 
 type Feed struct {
@@ -19,7 +19,7 @@ type Feed struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Name      string    `json:"name"`
-	URL       string    `json:"url"`
+	Url       string    `json:"url"`
 	UserID    uuid.UUID `json:"user_id"`
 }
 
