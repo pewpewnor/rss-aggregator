@@ -1,15 +1,16 @@
-package main
+package utils
 
 import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/pewpewnor/rss-aggregator/src/model"
 	"github.com/pewpewnor/rss-aggregator/src/res"
 )
 
 // Header format is the following
 // Authorization: Apikey <token>
-func getAPIKey(c *gin.Context) (string, error) {
+func GetAPIKey(c *gin.Context) (string, error) {
 	value := c.Request.Header["Authorization"][0]
 	if value == "" {
 		err := res.SimpleErrorResponse("Authentication error", "no authorization header or its value is not given")
@@ -39,8 +40,8 @@ func getAPIKey(c *gin.Context) (string, error) {
 	return values[1], nil
 }
 
-func getUserFromAuthMiddleware(c *gin.Context) User {
-	user, ok := c.MustGet("user").(User)
+func GetUserFromAuthMiddleware(c *gin.Context) model.User {
+	user, ok := c.MustGet("user").(model.User)
 	if !ok {
 		panic("type assertion to convert to User failed")
 	}

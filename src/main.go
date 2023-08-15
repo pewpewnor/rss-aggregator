@@ -8,13 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/pewpewnor/rss-aggregator/internal/database"
+	"github.com/pewpewnor/rss-aggregator/src/handler"
 
 	_ "github.com/lib/pq"
 )
-
-type HandlerContext struct {
-	DB *database.Queries
-}
 
 func main() {
 	log.SetPrefix("[rss-aggregator]")
@@ -40,17 +37,17 @@ func main() {
 		log.Fatal("Can't connect to database")
 	}
 
-	hc1 := HandlerContext{DB: database.New(conn)}
+	hc1 := handler.HandlerContext{DB: database.New(conn)}
 
 	router := gin.Default()
-	router.Use(corsMiddleware())
-	router.Use(hc1.authMiddleware())
+	router.Use(handler.CORSMiddleware())
+	router.Use(hc1.AuthMiddleware())
 
 	v1 := router.Group("/v1")
 	{
-		v1.GET("/healthz", handleReady)
-		v1.GET("/users", hc1.handleGetUser)
-		v1.POST("/users", hc1.handleCreateUser)
+		v1.GET("/healthz", handler.HandleReady)
+		v1.GET("/users", hc1.HandleGetUser)
+		v1.POST("/users", hc1.HandleCreateUser)
 	}
 
 	if os.Getenv("HTTP_ONLY") == "true" {
