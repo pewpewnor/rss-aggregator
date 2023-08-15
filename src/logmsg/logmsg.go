@@ -1,6 +1,10 @@
 package logmsg
 
-import "github.com/fatih/color"
+import (
+	"fmt"
+
+	"github.com/fatih/color"
+)
 
 var (
 	red    = color.New(color.FgRed).SprintFunc()
@@ -19,22 +23,22 @@ const (
 	infoPrefix    = "[INFO]"
 )
 
-func format(color func(...interface{}) string, prefix string, message string) string {
-	return color(prefix + " " + message)
+func format(color func(...interface{}) string, prefix string, message interface{}) string {
+	return color(prefix + " " + fmt.Sprint(message))
 }
 
-func Warning(message string) string {
+func Warning(message interface{}) string {
 	return format(yellow, warningPrefix, message)
 }
 
-func Error(message string) string {
+func Error(message interface{}) string {
 	return format(red, errorPrefix, message)
 }
 
-func Success(message string) string {
+func Success(message interface{}) string {
 	return format(green, successPrefix, message)
 }
 
-func Info(message string) string {
+func Info(message interface{}) string {
 	return format(blue, infoPrefix, message)
 }
