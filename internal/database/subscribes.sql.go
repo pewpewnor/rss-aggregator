@@ -45,6 +45,20 @@ func (q *Queries) CreateSubscribe(ctx context.Context, arg CreateSubscribeParams
 	return i, err
 }
 
+const deleteSubscribe = `-- name: DeleteSubscribe :exec
+DELETE FROM subscribes WHERE id = $1 AND user_id = $2
+`
+
+type DeleteSubscribeParams struct {
+	ID     uuid.UUID
+	UserID uuid.UUID
+}
+
+func (q *Queries) DeleteSubscribe(ctx context.Context, arg DeleteSubscribeParams) error {
+	_, err := q.db.ExecContext(ctx, deleteSubscribe, arg.ID, arg.UserID)
+	return err
+}
+
 const getSubscribe = `-- name: GetSubscribe :many
 SELECT id, created_at, updated_at, user_id, feed_id FROM subscribes WHERE user_id = $1
 `

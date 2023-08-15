@@ -5,3 +5,6 @@ RETURNING *;
 
 -- name: GetSubscribe :many
 SELECT * FROM subscribes WHERE user_id = $1;
+
+-- name: DeleteSubscribe :exec
+DELETE FROM subscribes WHERE id = $1 AND user_id = $2;

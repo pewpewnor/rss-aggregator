@@ -59,6 +59,7 @@ func main() {
 
 		v1WithAuth.GET("/subscribes", hc1.HandleGetSubscribe)
 		v1WithAuth.POST("/subscribes", hc1.HandleCreateSubscribe)
+		v1WithAuth.DELETE("/subscribes/:subscribeID", hc1.HandleDeleteSubscribe)
 	}
 
 	if os.Getenv("HTTP_ONLY") == "true" {

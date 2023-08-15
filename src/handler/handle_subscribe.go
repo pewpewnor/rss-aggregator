@@ -11,6 +11,21 @@ import (
 	"github.com/pewpewnor/rss-aggregator/src/utils"
 )
 
+func (hc *HandlerContext) HandleGetSubscribe(c *gin.Context) {
+	user := utils.GetUserFromAuthMiddleware(c)
+
+	subscribe, err := hc.DB.GetSubscribe(c, user.ID)
+	if err != nil {
+		c.JSON(400, res.SimpleErrorResponseFromError(
+			"Cannot get subscribe from database", err))
+		return
+	}
+
+	c.JSON(201, res.SuccessResponse(
+		gin.H{"subscribe": utils.DBSubscribesToModelSubscribes(subscribe)},
+		"Subscribe successfully found"))
+}
+
 func (hc *HandlerContext) HandleCreateSubscribe(c *gin.Context) {
 	user := utils.GetUserFromAuthMiddleware(c)
 
@@ -42,17 +57,25 @@ func (hc *HandlerContext) HandleCreateSubscribe(c *gin.Context) {
 		"Subscribe successfully created"))
 }
 
-func (hc *HandlerContext) HandleGetSubscribe(c *gin.Context) {
+func (hc *HandlerContext) HandleDeleteSubscribe(c *gin.Context) {
 	user := utils.GetUserFromAuthMiddleware(c)
 
-	subscribe, err := hc.DB.GetSubscribe(c, user.ID)
+	subscribeID, err := uuid.Parse(c.Param("subscribeID"))
 	if err != nil {
 		c.JSON(400, res.SimpleErrorResponseFromError(
-			"Cannot get subscribe from database", err))
+			"Invalid :subscribeID URL path", err))
 		return
 	}
 
-	c.JSON(201, res.SuccessResponse(
-		gin.H{"subscribe": utils.DBSubscribesToModelSubscribes(subscribe)},
-		"Subscribe successfully found"))
+	err = hc.DB.DeleteSubscribe(c, database.DeleteSubscribeParams{
+		ID:     subscribeID,
+		UserID: user.ID,
+	})
+	if err != nil {
+		c.JSON(400, res.SimpleErrorResponseFromError(
+			"Cannot delete subscribe from database", err))
+		return
+	}
+
+	c.JSON(201, res.SimpleSuccessResponse("Subscribe successfully found"))
 }
