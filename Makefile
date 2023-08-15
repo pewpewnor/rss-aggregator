@@ -12,7 +12,7 @@ dev-http-only: build
 	@export HTTP_ONLY=true && $(MAKE) run
 
 prod: build
-	@export GIN_MODE=release && $(MAKE) run
+	@export PRODUCTION="true" && export GIN_MODE=release && $(MAKE) run
 
 test:
 	@go test -v ./...

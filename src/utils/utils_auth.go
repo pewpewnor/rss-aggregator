@@ -41,9 +41,19 @@ func GetAPIKey(c *gin.Context) (string, error) {
 }
 
 func GetUserFromAuthMiddleware(c *gin.Context) model.User {
-	user, ok := c.MustGet("user").(model.User)
+	anyUser, exists := c.Get("user")
+	if !exists {
+		if EnvIsProduction() {
+			return model.User{}
+		}
+		panic("get 'user' does not exist (is not set from any middleware)")
+	}
+	user, ok := anyUser.(model.User)
 	if !ok {
-		panic("type assertion to convert to User failed")
+		if EnvIsProduction() {
+			return model.User{}
+		}
+		panic("type assertion to convert to model.User failed")
 	}
 
 	return user
