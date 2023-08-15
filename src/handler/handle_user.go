@@ -11,6 +11,13 @@ import (
 	"github.com/pewpewnor/rss-aggregator/src/utils"
 )
 
+func (hc *HandlerContext) HandleGetUser(c *gin.Context) {
+	user := utils.GetUserFromAuthMiddleware(c)
+
+	c.JSON(200, res.SuccessResponse(
+		gin.H{"user": user}, "User successfully found"))
+}
+
 func (hc *HandlerContext) HandleCreateUser(c *gin.Context) {
 	var params struct {
 		Name string `json:"name" binding:"required"`
@@ -36,11 +43,4 @@ func (hc *HandlerContext) HandleCreateUser(c *gin.Context) {
 	c.JSON(201, res.SuccessResponse(
 		gin.H{"user": model.User(user)},
 		"User successfully created"))
-}
-
-func (hc *HandlerContext) HandleGetUser(c *gin.Context) {
-	user := utils.GetUserFromAuthMiddleware(c)
-
-	c.JSON(200, res.SuccessResponse(
-		gin.H{"user": user}, "User successfully found"))
 }
