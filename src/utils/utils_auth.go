@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -43,14 +44,14 @@ func GetAPIKey(c *gin.Context) (string, error) {
 func GetUserFromAuthMiddleware(c *gin.Context) model.User {
 	anyUser, exists := c.Get("user")
 	if !exists {
-		if EnvIsProduction() {
+		if os.Getenv("PRODUCTION") == "true" {
 			return model.User{}
 		}
 		panic("get 'user' does not exist (is not set from any middleware)")
 	}
 	user, ok := anyUser.(model.User)
 	if !ok {
-		if EnvIsProduction() {
+		if os.Getenv("PRODUCTION") == "true" {
 			return model.User{}
 		}
 		panic("type assertion to convert to model.User failed")
