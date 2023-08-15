@@ -50,6 +50,7 @@ func main() {
 		v1.GET("/users", hc1.HandleGetUser)
 		v1.POST("/users", hc1.HandleCreateUser)
 		v1.POST("/feeds", hc1.HandleCreateFeed)
+		v1.POST("/subscribe", hc1.HandleCreateFeed)
 	}
 
 	if os.Getenv("HTTP_ONLY") == "true" {
