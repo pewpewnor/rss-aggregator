@@ -69,6 +69,9 @@ func main() {
 		v1WithAuth.GET("/subscribes", hc1.HandleGetSubscribe)
 		v1WithAuth.POST("/subscribes", hc1.HandleCreateSubscribe)
 		v1WithAuth.DELETE("/subscribes/:subscribeID", hc1.HandleDeleteSubscribe)
+
+		// TODO: make this to :numberOfNewestPosts
+		v1WithAuth.GET("/posts/newest", hc1.HandleGetNewestPostsForUser)
 	}
 
 	log.Println(logmsg.Info("server trying to start at port ", port))
