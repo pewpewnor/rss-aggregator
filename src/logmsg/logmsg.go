@@ -23,22 +23,38 @@ const (
 	infoPrefix    = "[INFO]"
 )
 
-func format(color func(...interface{}) string, prefix string, message interface{}) string {
+func Warn(v ...any) string {
+	return format(yellow, warningPrefix, fmt.Sprint(v...))
+}
+
+func Warnf(s string, v ...any) string {
+	return format(yellow, warningPrefix, fmt.Sprintf(s, v...))
+}
+
+func Error(v ...any) string {
+	return format(red, errorPrefix, fmt.Sprint(v...))
+}
+
+func Errorf(s string, v ...any) string {
+	return format(red, errorPrefix, fmt.Sprintf(s, v...))
+}
+
+func Success(v ...any) string {
+	return format(green, successPrefix, fmt.Sprint(v...))
+}
+
+func Successf(s string, v ...any) string {
+	return format(green, successPrefix, fmt.Sprintf(s, v...))
+}
+
+func Info(v ...any) string {
+	return format(blue, infoPrefix, fmt.Sprint(v...))
+}
+
+func Infof(s string, v ...any) string {
+	return format(blue, infoPrefix, fmt.Sprintf(s, v...))
+}
+
+func format(color func(...any) string, prefix string, message string) string {
 	return color(prefix + " " + fmt.Sprint(message))
-}
-
-func Warning(message interface{}) string {
-	return format(yellow, warningPrefix, message)
-}
-
-func Error(message interface{}) string {
-	return format(red, errorPrefix, message)
-}
-
-func Success(message interface{}) string {
-	return format(green, successPrefix, message)
-}
-
-func Info(message interface{}) string {
-	return format(blue, infoPrefix, message)
 }
