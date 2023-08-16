@@ -18,10 +18,6 @@ import (
 )
 
 func StartScraping(db *database.Queries, concurrency int, timeBetweenRequest time.Duration) {
-	log.Println(logmsg.Infof(
-		"scraping on %v goroutines every %v duration",
-		concurrency, timeBetweenRequest))
-
 	ticker := time.NewTicker(timeBetweenRequest)
 
 	for ; ; <-ticker.C {
