@@ -1,5 +1,4 @@
 -- +goose Up
-
 CREATE TABLE subscribes (
     id UUID PRIMARY KEY,
     created_at TIMESTAMP NOT NULL,
@@ -10,5 +9,4 @@ CREATE TABLE subscribes (
 );
 
 -- +goose Down
-
 DROP TABLE subscribes;
