@@ -2,10 +2,13 @@ package utils
 
 import (
 	"context"
+	"database/sql"
 	"log"
+	"strings"
 	"sync"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/pewpewnor/rss-aggregator/internal/database"
 	"github.com/pewpewnor/rss-aggregator/src/logmsg"
 )
@@ -52,9 +55,37 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 		return
 	}
 
-	// for _, item := range rssFeed.Channel.Item {
+	for _, item := range rssFeed.Channel.Item {
+		description := sql.NullString{}
+		if item.Description == "" {
+			description.String = item.Description
+			description.Valid = true
+		}
 
-	// }
+		// TODO: add more robust date parsing logic
+		publishedAt, err := time.Parse(time.RFC1123Z, item.PubDate)
+		if err != nil {
+			log.Println(logmsg.Warn(
+				"Could not parse date, need more robust date parsing logic"))
+		}
+
+		_, err = db.CreatePost(context.Background(), database.CreatePostParams{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now().UTC(),
+			UpdatedAt:   time.Now().UTC(),
+			Url:         item.Link,
+			Title:       item.Title,
+			Description: description,
+			PublishedAt: publishedAt,
+			FeedID:      feed.ID,
+		})
+		if err != nil {
+			if strings.Contains(err.Error(), "duplicate key value") {
+				continue
+			}
+			log.Print(logmsg.Warn("failed to create post: ", err))
+		}
+	}
 
 	log.Println(logmsg.Successf(
 		"%v posts fetched from feed '%v'",
