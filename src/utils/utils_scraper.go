@@ -3,7 +3,10 @@ package utils
 import (
 	"context"
 	"database/sql"
+	"encoding/xml"
+	"io"
 	"log"
+	"net/http"
 	"strings"
 	"sync"
 	"time"
@@ -11,6 +14,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pewpewnor/rss-aggregator/internal/database"
 	"github.com/pewpewnor/rss-aggregator/src/logmsg"
+	"github.com/pewpewnor/rss-aggregator/src/model"
 )
 
 func StartScraping(db *database.Queries, concurrency int, timeBetweenRequest time.Duration) {
@@ -49,7 +53,7 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 			"error marking feed as fetched (feed id does not exist):", err))
 	}
 
-	rssFeed, err := UrlToFeed(feed.Url)
+	rssFeed, err := urlToFeed(feed.Url)
 	if err != nil {
 		log.Println(logmsg.Warn("error fetching feed from URL ", feed.Url))
 		return
@@ -57,7 +61,7 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 
 	for _, item := range rssFeed.Channel.Item {
 		description := sql.NullString{}
-		if item.Description == "" {
+		if item.Description != "" {
 			description.String = item.Description
 			description.Valid = true
 		}
@@ -90,4 +94,29 @@ func scrapeFeed(db *database.Queries, wg *sync.WaitGroup, feed database.Feed) {
 	log.Println(logmsg.Successf(
 		"%v posts fetched from feed '%v'",
 		len(rssFeed.Channel.Item), feed.Name))
+}
+
+func urlToFeed(url string) (model.RSSFeed, error) {
+	httpClient := http.Client{
+		Timeout: 10 * time.Second,
+	}
+
+	resp, err := httpClient.Get(url)
+	if err != nil {
+		return model.RSSFeed{}, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return model.RSSFeed{}, err
+	}
+
+	rssFeed := model.RSSFeed{}
+	err = xml.Unmarshal(body, &rssFeed)
+	if err != nil {
+		return model.RSSFeed{}, err
+	}
+
+	return rssFeed, nil
 }
