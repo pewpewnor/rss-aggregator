@@ -1,10 +1,7 @@
 package utils
 
 import (
-	"encoding/xml"
-	"io"
-	"net/http"
-	"time"
+	"database/sql"
 
 	"github.com/pewpewnor/rss-aggregator/internal/database"
 	"github.com/pewpewnor/rss-aggregator/src/model"
@@ -18,27 +15,31 @@ func DBSubscribesToModelSubscribes(dbSubscribes []database.Subscribe) []model.Su
 	return subscribes
 }
 
-func UrlToFeed(url string) (model.RSSFeed, error) {
-	httpClient := http.Client{
-		Timeout: 10 * time.Second,
+func DBPostsToModelPosts(dbPosts []database.Post) []model.Post {
+	posts := []model.Post{}
+	for _, post := range dbPosts {
+		posts = append(posts, DBPostToModelPost(post))
 	}
+	return posts
+}
 
-	resp, err := httpClient.Get(url)
-	if err != nil {
-		return model.RSSFeed{}, err
+func DBPostToModelPost(dbPost database.Post) model.Post {
+	return model.Post{
+		ID:          dbPost.ID,
+		CreatedAt:   dbPost.CreatedAt,
+		UpdatedAt:   dbPost.UpdatedAt,
+		Url:         dbPost.Url,
+		Title:       dbPost.Title,
+		Description: NullStringToPointerString(dbPost.Description),
+		PublishedAt: dbPost.PublishedAt,
+		FeedID:      dbPost.FeedID,
 	}
-	defer resp.Body.Close()
+}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return model.RSSFeed{}, err
+func NullStringToPointerString(nullString sql.NullString) string {
+	if nullString.Valid {
+		return nullString.String
+	} else {
+		return ""
 	}
-
-	rssFeed := model.RSSFeed{}
-	err = xml.Unmarshal(body, &rssFeed)
-	if err != nil {
-		return model.RSSFeed{}, err
-	}
-
-	return rssFeed, nil
 }
